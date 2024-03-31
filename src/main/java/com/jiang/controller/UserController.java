@@ -2,15 +2,15 @@ package com.jiang.controller;
 
 
 import com.jiang.common.Result;
+import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
 import com.jiang.dao.UserDO;
+import com.jiang.dto.UserDTO;
 import com.jiang.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.RelationSupport;
-import java.util.List;
 
 /**
 *@author SmilingSea
@@ -42,13 +42,13 @@ public class UserController {
      * @return 带有token的result
      */
     @PostMapping("/login")
-    public ResultWithToken<String> login(String username, String password){
-        return userService.login(username, password);
+    public ResultWithToken<String> login(@RequestBody UserDO user){
+        return userService.login(user);
     }
 
     @GetMapping("/profile")
-    public
-
-
+    public ResultWithData<UserDTO> profile(@RequestHeader String token){
+        return userService.profile(token);
+    }
 
 }

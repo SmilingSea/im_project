@@ -42,15 +42,15 @@ public class ResultWithData<T> {
     }
     /**
      * 构造方法
-     * @param token  传入参数
+     * @param data  传入参数
      * @return result
      * @param <T> 类型
      */
-    public static <T> ResultWithData<T> success(T token, String msg) {
+    public static <T> ResultWithData<T> success(T data, String msg) {
         ResultWithData<T> r = new ResultWithData<>();
         r.success = true;
         r.message = msg;
-        r.data = token;
+        r.data = data;
         return r;
     }
 

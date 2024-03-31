@@ -3,8 +3,10 @@ package com.jiang.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiang.common.Result;
+import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
 import com.jiang.dao.UserDO;
+import com.jiang.dto.UserDTO;
 import com.jiang.mapper.UserMapper;
 import com.jiang.service.UserService;
 
@@ -54,8 +56,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return Result.success("注册成功！");
     }
 
+
     @Override
-    public ResultWithToken<String> login(String username, String password) {
+    public ResultWithToken<String> login(UserDO user) {
+        String username = user.getUsername();
+        String password = user.getPassword();
         // 转换密码
         password = DigestUtils.md5DigestAsHex(password.getBytes());
 
@@ -85,4 +90,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return ResultWithToken.success(token ,"登录成功！");
     }
 
+
+    @Override
+    public ResultWithData<UserDTO> profile(String token) {
+        // 根据token获取用户id
+        Long id = JWTUtils.getIdByToken(token);
+        // 根据id查找用户信息
+        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserDO::getId, id);
+        UserDO user = userService.getOne(queryWrapper);
+        UserDTO data = new UserDTO(user.getId(), user.getUsername(), user.getNickname(), user.getEmail(), user.getAuthority());
+        return ResultWithData.success(data,"查询成功！");
+    }
 }
