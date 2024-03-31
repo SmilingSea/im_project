@@ -12,7 +12,7 @@ import lombok.Data;
  */
 
 @Data
-public class Result<T> {
+public class ResultWithToken<T> {
 
     /**
      * 是否成功
@@ -25,24 +25,34 @@ public class Result<T> {
     private String message;
 
     /**
+     * 数据
+     */
+    private T token;
+
+
+    /**
      * 构造方法
-     * @param object  传入参数
+     * @param token  传入参数
      * @return result
      * @param <T> 类型
      */
-    public static <T> Result<T> success(T object) {
-        Result<T> r = new Result<>();
+    public static <T> ResultWithToken<T> success(T token) {
+        ResultWithToken<T> r = new ResultWithToken<>();
+        r.success = true;
+        r.token = token;
         return r;
     }
     /**
      * 构造方法
-     * @param object  传入参数
+     * @param token  传入参数
      * @return result
      * @param <T> 类型
      */
-    public static <T> Result<T> success(T object, String msg) {
-        Result<T> r = new Result<>();
+    public static <T> ResultWithToken<T> success(T token, String msg) {
+        ResultWithToken<T> r = new ResultWithToken<>();
+        r.success = true;
         r.message = msg;
+        r.token = token;
         return r;
     }
 
@@ -52,8 +62,8 @@ public class Result<T> {
      * @return
      * @param <T> 类型
      */
-    public static <T> Result<T> success(String msg){
-        Result<T> r = new Result<>();
+    public static <T> ResultWithToken<T> success(String msg){
+        ResultWithToken<T> r = new ResultWithToken<>();
         r.success = true;
         r.message = msg;
         return r;
@@ -66,8 +76,8 @@ public class Result<T> {
      * @return result
      * @param <T> 类型
      */
-    public static <T> Result<T> error(String msg) {
-        Result r = new Result();
+    public static <T> ResultWithToken<T> error(String msg) {
+        ResultWithToken r = new ResultWithToken();
         r.message = msg;
         r.success = false;
         return r;

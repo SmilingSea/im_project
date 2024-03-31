@@ -2,11 +2,8 @@ package com.jiang.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiang.common.Result;
+import com.jiang.common.ResultWithToken;
 import com.jiang.dao.UserDO;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 
 /**
  * @author SmilingSea
@@ -14,7 +11,8 @@ import java.util.HashMap;
  */
 
 public interface UserService extends IService<UserDO> {
-//    Result<HashMap<String, Object>> save(HttpServletRequest request, UserDO userDO);
+    Result<String> register(UserDO userDO);
 
-//    UserDO getByUsername(String username);
+    ResultWithToken<String> login(String name, String password);
+
 }

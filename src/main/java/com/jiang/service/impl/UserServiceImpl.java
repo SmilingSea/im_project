@@ -3,18 +3,20 @@ package com.jiang.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiang.common.Result;
+import com.jiang.common.ResultWithToken;
 import com.jiang.dao.UserDO;
 import com.jiang.mapper.UserMapper;
 import com.jiang.service.UserService;
 
+import com.jiang.utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author SmilingSea
@@ -27,34 +29,60 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Resource
     private UserService userService;
 
-//    @Override
-//    public Result<HashMap<String, Object>> save(HttpServletRequest request, UserDO userDO) {
-//        // 使用MD5进行加密密码
-//        userDO.setPassword(DigestUtils.md5DigestAsHex(userDO.getPassword().getBytes()));
-//
-//        // 检查用户名是否重复
-//        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(UserDO::getUsername, userDO.getUsername());
-//        if (userService.getOne(queryWrapper) != null){
-//            return Result.error("用户已存在...");
-//        }
-//        userDO.setAuthority("0");
-//        userDO.setCreatedAt(LocalDateTime.now());
-//        userDO.setUpdatedAt(LocalDateTime.now());
-//
-//
-//
-//        userService.save(userDO);
-//
-//        return Result.success("注册成功！");
-//    }
-//
-//    @Override
-//    public UserDO getByUsername(String username) {
-//        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(UserDO::getUsername, username);
-//        return userService.getOne(queryWrapper);
-//    }
+    @Resource
+    private RedisTemplate redisTemplate;
 
+    @Override
+    public Result<String> register(UserDO userDO) {
+        // 使用MD5进行加密密码
+        userDO.setPassword(DigestUtils.md5DigestAsHex(userDO.getPassword().getBytes()));
+
+        // 检查用户名是否重复
+        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserDO::getUsername, userDO.getUsername());
+        if (userService.getOne(queryWrapper) != null) {
+            return Result.error("用户已存在...");
+        }
+        userDO.setAuthority("0");
+
+        userDO.setCreatedAt(LocalDateTime.now());
+        userDO.setUpdatedAt(LocalDateTime.now());
+
+
+        userService.save(userDO);
+
+        return Result.success("注册成功！");
+    }
+
+    @Override
+    public ResultWithToken<String> login(String username, String password) {
+        // 转换密码
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
+
+        //根据用户名name查询数据库
+        LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserDO::getUsername, username);
+        UserDO usr = userService.getOne(queryWrapper);
+
+        //如果没有查询到则返回失败
+        if (usr == null) {
+            return ResultWithToken.error("登录失败");
+        }
+
+        //比对密码，如果不一致则返回登录失败
+        if (!usr.getPassword().equals(password)) {
+            return ResultWithToken.error("登录失败");
+        }
+
+        // 获取token
+        String token = JWTUtils.getToken(usr);
+
+        //将token和id存入reids
+
+        redisTemplate.opsForValue().set(JWTUtils.getIdByToken(token), token, 7, TimeUnit.DAYS);
+
+        //登录成功，返回token
+        return ResultWithToken.success(token ,"登录成功！");
+    }
 
 }

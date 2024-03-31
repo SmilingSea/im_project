@@ -1,18 +1,16 @@
 package com.jiang.common;
 
+/**
+ * @author SmilingSea
+ * 2024/3/31
+ */
+
 
 import lombok.Data;
 
 
-/**
- * 通用返回结果类，服务端响应的数据最终都会封装成此对象
- *
- * @author SmilingSea
- * @param <T>
- */
-
 @Data
-public class Result<T> {
+public class ResultWithData<T> {
 
     /**
      * 是否成功
@@ -25,24 +23,34 @@ public class Result<T> {
     private String message;
 
     /**
+     * 数据
+     */
+    private T data;
+
+
+    /**
      * 构造方法
-     * @param object  传入参数
+     * @param data  传入参数
      * @return result
      * @param <T> 类型
      */
-    public static <T> Result<T> success(T object) {
-        Result<T> r = new Result<>();
+    public static <T> ResultWithData<T> success(T data) {
+        ResultWithData<T> r = new ResultWithData<>();
+        r.success = true;
+        r.data = data;
         return r;
     }
     /**
      * 构造方法
-     * @param object  传入参数
+     * @param token  传入参数
      * @return result
      * @param <T> 类型
      */
-    public static <T> Result<T> success(T object, String msg) {
-        Result<T> r = new Result<>();
+    public static <T> ResultWithData<T> success(T token, String msg) {
+        ResultWithData<T> r = new ResultWithData<>();
+        r.success = true;
         r.message = msg;
+        r.data = token;
         return r;
     }
 
@@ -52,8 +60,8 @@ public class Result<T> {
      * @return
      * @param <T> 类型
      */
-    public static <T> Result<T> success(String msg){
-        Result<T> r = new Result<>();
+    public static <T> ResultWithData<T> success(String msg){
+        ResultWithData<T> r = new ResultWithData<>();
         r.success = true;
         r.message = msg;
         return r;
@@ -66,8 +74,8 @@ public class Result<T> {
      * @return result
      * @param <T> 类型
      */
-    public static <T> Result<T> error(String msg) {
-        Result r = new Result();
+    public static <T> ResultWithData<T> error(String msg) {
+        ResultWithData r = new ResultWithData();
         r.message = msg;
         r.success = false;
         return r;
@@ -75,3 +83,4 @@ public class Result<T> {
 
 
 }
+
