@@ -26,9 +26,9 @@ public class ContactsController {
         return contactsService.add(token, user);
     }
 
-    @DeleteMapping("/remove/{id}")
-    public Result<String> remove(@RequestHeader String token, @PathVariable Long id){
-        return contactsService.remove(token, id);
+    @DeleteMapping("/remove/{contactId}")
+    public Result<String> remove(@RequestHeader String token, @PathVariable Long contactId){
+        return contactsService.remove(token, contactId);
     }
 
     @GetMapping("/list")

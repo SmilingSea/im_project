@@ -15,7 +15,7 @@ import java.util.List;
 public interface ContactsService extends IService<ContactsDO> {
     Result<String> add(String token, UserDO user) ;
 
-    Result<String> remove(String token, Long id);
+    Result<String> remove(String token, Long contactId);
 
     ResultWithData<List<Long>> getContacts(String token);
 
