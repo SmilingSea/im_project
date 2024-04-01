@@ -37,9 +37,8 @@ public class UserController {
 
     /**
      * 用户登录接口
-     * @param username springsecurity传入username
-     * @param password springsecurity传入password
-     * @return 带有token的result
+     * @param user
+     * @return
      */
     @PostMapping("/login")
     public ResultWithToken<String> login(@RequestBody UserDO user){

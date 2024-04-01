@@ -30,30 +30,19 @@ public class ResultWithData<T> {
 
     /**
      * 构造方法
-     * @param data  传入参数
+     *
+     * @param <T>  类型
+     * @param data 传入参数
+     * @param 查找成功
      * @return result
-     * @param <T> 类型
-     */
-    public static <T> ResultWithData<T> success(T data) {
-        ResultWithData<T> r = new ResultWithData<>();
-        r.success = true;
-        r.data = data;
-        return r;
-    }
-    /**
-     * 构造方法
-     * @param data  传入参数
-     * @return result
-     * @param <T> 类型
      */
     public static <T> ResultWithData<T> success(T data, String msg) {
         ResultWithData<T> r = new ResultWithData<>();
         r.success = true;
-        r.message = msg;
         r.data = data;
+        r.message = msg;
         return r;
     }
-
     /**
      * 构造方法）成功
      * @param msg 传入参数
