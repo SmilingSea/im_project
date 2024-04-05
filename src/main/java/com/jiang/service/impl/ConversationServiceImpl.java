@@ -62,6 +62,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
 
     @Override
     public ResultWithData<List<Long>> getMembers(String token, Long conversationId) {
+        Long id = JWTUtils.getIdByToken(token);
         LambdaQueryWrapper<ConversationUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ConversationUser::getConversationId, conversationId);
         List<ConversationUser> list = conversationUserService.list(queryWrapper);
@@ -70,9 +71,11 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
 
         for (ConversationUser conversationUser : list) {
             memberIds.add(conversationUser.getUserId());
+            // 除开自己的id
+            memberIds.remove(id);
         }
 
-        return ResultWithData.success(memberIds,"查询成功！");
+        return ResultWithData.success(memberIds,"查询会话成员成功！");
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.jiang.controller;
 
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
-import com.jiang.service.ContactsService;
 import com.jiang.service.ConversationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -92,9 +92,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
 
     @Override
-    public ResultWithData<UserDTO> profile(String token) {
-        // 根据token获取用户id
-        Long id = JWTUtils.getIdByToken(token);
+    public ResultWithData<UserDTO> profile(String token, Long id) {
         // 根据id查找用户信息
         LambdaQueryWrapper<UserDO> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserDO::getId, id);

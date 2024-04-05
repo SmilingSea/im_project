@@ -45,9 +45,9 @@ public class UserController {
         return userService.login(user);
     }
 
-    @GetMapping("/profile")
-    public ResultWithData<UserDTO> profile(@RequestHeader String token){
-        return userService.profile(token);
+    @GetMapping("/profile/{id}")
+    public ResultWithData<UserDTO> profile(@RequestHeader String token, @PathVariable Long id){
+        return userService.profile(token,id);
     }
 
 }

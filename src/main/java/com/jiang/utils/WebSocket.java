@@ -5,8 +5,13 @@ package com.jiang.utils;
  * 2024/3/20
  */
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jiang.dao.MessageDO;
 import com.jiang.service.ConversationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -16,6 +21,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,7 +49,13 @@ public class WebSocket {
     private String id;
 
     @Resource
+    RedisTemplate<String, String> redisTemplate;
+
+    @Resource
     private ConversationService conversationService;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
 
 
@@ -58,8 +71,6 @@ public class WebSocket {
         this.id = id;
         // name是用来表示唯一客户端，如果需要指定发送，需要指定发送通过name来区分
         webSocketSet.put(id,this);
-
-
         log.info("[WebSocket] 连接成功，当前连接人数为：{}",webSocketSet.size());
     }
 
@@ -77,16 +88,14 @@ public class WebSocket {
     @OnMessage
     public void OnMessage(String message){
 
-        log.info("[WebSocket] 收到消息：{}",message);
+        log.info("[WebSocket] 系统收到消息：{}",message);
 
         //判断是否需要指定发送，具体规则自定义
         if(message.indexOf("TOUSER") == 0){
-
-            String name = message.substring(message.indexOf("TOUSER")+6,message.indexOf(";"));
-            AppointSending(name,message.substring(message.indexOf(";")+1,message.length()));
-
+            ArrayList<String> ids = new ArrayList<>();
+            String id = message.substring(message.indexOf("TOUSER")+6,message.indexOf(";"));
+            AppointSending(ids,message.substring(message.indexOf(";")+1,message.length()));
         }else{
-
             GroupSending(message);
         }
 
@@ -111,14 +120,28 @@ public class WebSocket {
 
     /**
      * 指定发送
-     * @param name
+     * @param id
      * @param message
      */
-    public void AppointSending(String name,String message){
+    public void AppointSending(List<String> id, String message){
         try {
-            webSocketSet.get(name).session.getBasicRemote().sendText(message);
+            for (String s : id) {
+                webSocketSet.get(s).session.getBasicRemote().sendText(message);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    public void saveMessage(MessageDO message) {
+        try {
+            String jsonMessage = objectMapper.writeValueAsString(message);
+            redisTemplate.opsForHash().put("messages", message.getId().toString(), jsonMessage);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }
