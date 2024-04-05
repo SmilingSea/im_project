@@ -87,7 +87,6 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, ContactsDO>
             data.add(contactsDO.getContactId());
         }
 
-
         return ResultWithData.success(data, "查找成功！");
     }
 }
