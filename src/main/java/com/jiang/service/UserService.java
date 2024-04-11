@@ -17,5 +17,5 @@ public interface UserService extends IService<UserDO> {
 
     ResultWithToken<String> login(UserDO user);
 
-    ResultWithData<UserDTO> profile(String token);
+    ResultWithData<UserDTO> profile(String token, Long id);
 }
