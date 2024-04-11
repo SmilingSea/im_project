@@ -17,9 +17,18 @@ public class MessageDO {
     private Long id;
     private Long conversationId;
     private Long senderId;
-    private Long receiverId;
     private String content;
     private MessageType type;
     private LocalDateTime sentAt;
     private LocalDateTime receivedAt;
+
+    public MessageDO(Long id, Long conversationId, Long senderId, String content, MessageType type, LocalDateTime sentAt, LocalDateTime receivedAt) {
+        this.id = id;
+        this.conversationId = conversationId;
+        this.senderId = senderId;
+        this.content = content;
+        this.type = type;
+        this.sentAt = sentAt;
+        this.receivedAt = receivedAt;
+    }
 }

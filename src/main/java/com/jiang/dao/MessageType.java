@@ -12,5 +12,5 @@ public enum MessageType {
     /**
      * 图片
      */
-    PICTURE
+    PICTURE;
 }
