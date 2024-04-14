@@ -15,6 +15,7 @@ import com.jiang.dao.MessageDO;
 import com.jiang.dao.MessageType;
 
 import com.jiang.dto.MessageDTO;
+import com.jiang.filter.TextFilter;
 import com.jiang.mq.Sender;
 import com.jiang.service.BanService;
 import com.jiang.service.ConversationUserService;
@@ -30,6 +31,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +119,8 @@ public class WebSocketServer {
      */
     @OnOpen
     public void onOpen(Session session, @PathParam("connectId") String connectId) {
+        InetSocketAddress remoteAddress = WebsocketUtils.getRemoteAddress(session);
+        log.info("远程ip地址："+remoteAddress);
         this.session = session;
         //加入set中
         webSocketSet.add(this);
@@ -191,6 +195,11 @@ public class WebSocketServer {
         LambdaQueryWrapper<BanDO> banQuery = new LambdaQueryWrapper<>();
         banQuery.eq(BanDO::getBannerId,userId);
         List<BanDO> beBanList = banService.list();
+
+        // 检测敏感词并替换
+        if(type.equals(MessageType.TEXT)){
+            content = TextFilter.blockSensitiveWords(content);
+        }
 
         // 发送消息，但是如果被屏蔽，则不接受消息
         if (!(beBanList == null)){
