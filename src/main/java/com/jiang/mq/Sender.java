@@ -17,12 +17,10 @@ import javax.annotation.Resource;
 @Slf4j
 public class Sender {
 
-    // 通过AmqpTemplate传次奥西
+    // 通过AmqpTemplate传递消息
     @Resource
     private AmqpTemplate rabbitTemplate;
 
-    public Sender() {
-    }
 
     /**
      * 传输MessageDO对象到rabbitmq
@@ -31,6 +29,5 @@ public class Sender {
         String messageString = JSON.toJSONString(messageDO);
         log.info("SenderId:"+messageDO.getSenderId());
         this.rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME,messageString);
-
     }
 }

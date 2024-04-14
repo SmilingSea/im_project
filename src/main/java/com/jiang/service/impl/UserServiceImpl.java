@@ -81,10 +81,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
         // 获取token
         String token = JWTUtils.getToken(usr);
+        Long id = JWTUtils.getIdByToken(token);
 
         //将token和id存入reids
 
-        redisTemplate.opsForValue().set(JWTUtils.getIdByToken(token), token, 7, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set(id.toString(), token, 7, TimeUnit.DAYS);
 
         //登录成功，返回token
         return ResultWithToken.success(token ,"登录成功！");
