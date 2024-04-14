@@ -6,17 +6,20 @@ package com.jiang.utils;
  */
 
 
-
-import com.alibaba.druid.sql.visitor.functions.Now;
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jiang.dao.BanDO;
+import com.jiang.dao.ConversationUser;
 import com.jiang.dao.MessageDO;
 import com.jiang.dao.MessageType;
 
 import com.jiang.dto.MessageDTO;
 import com.jiang.mq.Sender;
+import com.jiang.service.BanService;
+import com.jiang.service.ConversationUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -27,9 +30,12 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
+
 
 /**
  * @ServerEndpoint 这个注解有什么作用？
@@ -43,9 +49,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Service
 @ServerEndpoint("/{connectId}")
 public class WebSocketServer {
-
-
-
 
 
     /**
@@ -68,17 +71,12 @@ public class WebSocketServer {
     private String connectId = "";
 
     /**
-     * 连接服务器的用户的id
-     */
-    private Long userId;
-
-    /**
      * 消息内容
      */
     private String content;
 
     @Autowired
-    private RedisTemplate<Object,Object> redisTemplate;
+    private RedisTemplate<Object, Object> redisTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -87,13 +85,31 @@ public class WebSocketServer {
 
 
     @Resource
-    public void setSender(Sender sender){
+    public void setSender(Sender sender) {
         WebSocketServer.sender = sender;
     }
 
+    private static Base64Util base64Util;
 
+    @Resource
+    public void setBase64Util(Base64Util base64Util) {
+        WebSocketServer.base64Util = base64Util;
+    }
 
+    private static ConversationUserService conversationUserService;
 
+    @Resource
+    public void setConversationUserService(ConversationUserService conversationUserService){
+        WebSocketServer.conversationUserService = conversationUserService;
+    }
+    
+    private static BanService banService;
+    
+    @Resource
+    public void setBanService(BanService banService){
+        WebSocketServer.banService  = banService;
+    }
+    
 
 
     /**
@@ -131,6 +147,10 @@ public class WebSocketServer {
 
     }
 
+
+    // TODO:4.存消息用groupid存，查消息列表的时候顺便查被屏蔽的人，如果被屏蔽则不显示
+
+
     /**
      * 收到客户端消息后调用的方法
      *
@@ -138,32 +158,75 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        long groupId = Long.parseLong(connectId);
+        log.info("发送消息");
         log.info("收到来自窗口" + connectId + "的信息:" + message);
 
-        // 发送到指定群
-        sendInfo(message, connectId);
+        // 解析收到的json
+        MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
+        Long conversationId = messageDTO.getConversationId();
+        String content = messageDTO.getContent();
 
-        //将接收到的json转化为对象
-        ObjectMapper mapper = new ObjectMapper();
-        try{
-            MessageDTO messageDTO = mapper.readValue(message, MessageDTO.class);
-            // 拿到发送者的id和消息内容
-            Long senderId = messageDTO.getUserId();
-            String content = messageDTO.getContent();
-            MessageType type = messageDTO.getType();
-            // 创建MessageDO对象
-            LocalDateTime now = LocalDateTime.now();
-            MessageDO messageDO = new MessageDO(null,groupId,senderId,content,type,now,now);
 
-            // 发送message对象到消息队列中
-            sender.send(messageDO);
-            log.info("消息已发送");
+        // connectid就是用户id
+        Long userId = Long.parseLong(connectId);
 
-        }catch (IOException e){
-            e.printStackTrace();
+        // 判断消息类型（文字，图片）
+        MessageType type = MessageType.TEXT;
+        String regex = "^https://improject-1322480945\\.cos\\.ap-nanjing\\.myqcloud\\.com/.*$";
+        boolean ifPicture = content.matches(regex);
+        if (ifPicture){
+            type = MessageType.PICTURE;
         }
+
+        // 创建MessageDO对象
+        LocalDateTime now = LocalDateTime.now();
+        MessageDO messageDO = new MessageDO(null, conversationId, userId, content, type, now, now);
+
+        // 查表发现是发给谁
+        LambdaQueryWrapper<ConversationUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ConversationUser::getConversationId,conversationId);
+        List<ConversationUser> list = conversationUserService.list(queryWrapper);
+        
+        // 查看是否被人屏蔽
+        LambdaQueryWrapper<BanDO> banQuery = new LambdaQueryWrapper<>();
+        banQuery.eq(BanDO::getBannerId,userId);
+        List<BanDO> beBanList = banService.list();
+
+        // 发送消息，但是如果被屏蔽，则不接受消息
+        if (!(beBanList == null)){
+            List<Long> bannerIds = new ArrayList<>();
+            List<Long> receiverIds = new ArrayList<>();
+            for (BanDO banDO : beBanList) {
+                bannerIds.add(banDO.getUserId());
+            }
+            for (ConversationUser conversationUser : list) {
+                receiverIds.add(conversationUser.getUserId());
+            }
+
+            List<Long> resultList = receiverIds.stream()
+                    .filter(item -> !bannerIds.contains(item))
+                    .collect(Collectors.toList());
+            for (Long receiver : resultList) {
+                sendInfo(content, receiver.toString());
+            }
+
+        }else{
+            for (ConversationUser Users : list) {
+                // 发送到指定会话
+                sendInfo(content, Users.getUserId().toString());
+            }
+        }
+
+
+
+
+
+        // 发送message对象到消息队列中
+        sender.send(messageDO);
+        log.info("消息已发送");
     }
+
+
 
     /**
      * @ Param session

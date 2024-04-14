@@ -10,17 +10,12 @@ import lombok.Data;
 @Data
 public class MessageDTO {
     /**
-     * 发消息的用户id
+     * 会话Id
      */
-    private Long userId;
+    private Long conversationId;
     /**
      * 消息内容
      */
     private String content;
-
-    /**
-     * 消息类型
-     */
-    private MessageType type;
 
 }

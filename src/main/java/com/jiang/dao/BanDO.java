@@ -8,15 +8,14 @@ import lombok.Data;
  * 2024/4/13
  */
 @Data
-@TableName("conversation_user")
-public class ConversationUser {
-    private Long conversationId;
-
+@TableName("ban")
+public class BanDO {
     private Long userId;
 
+    private Long bannerId;
 
-    public ConversationUser(Long conversationId, Long userId) {
-        this.conversationId = conversationId;
+    public BanDO(Long userId, Long bannerId) {
         this.userId = userId;
+        this.bannerId = bannerId;
     }
 }

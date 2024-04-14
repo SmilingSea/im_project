@@ -6,6 +6,7 @@ import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
 import com.jiang.dao.UserDO;
 import com.jiang.dto.UserDTO;
+import com.jiang.service.BanService;
 import com.jiang.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController  {
 
     private final UserService userService;
+
+    private final BanService banService;
 
     /**
      * 用户注册接口
@@ -48,6 +51,11 @@ public class UserController  {
     @GetMapping("/profile/{id}")
     public ResultWithData<UserDTO> profile(@RequestHeader String token, @PathVariable Long id){
         return userService.profile(token,id);
+    }
+
+    @PostMapping("/ban/{bannerId}")
+    public Result<String> ban(@RequestHeader String token, @PathVariable("bannerId") Long bannerId){
+        return banService.ban(token, bannerId);
     }
 
 }

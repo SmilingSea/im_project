@@ -6,7 +6,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
 *@author SmilingSea
@@ -18,7 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication(exclude= {SecurityAutoConfiguration.class })
 @ServletComponentScan
 @EnableTransactionManagement
-public class Application {
+public class Application implements ServletContextInitializer {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
         log.info("项目启动成功...");
@@ -27,4 +31,9 @@ public class Application {
     }
 
 
+    //设置websocket发送内容长度
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize","224288000");
+    }
 }
