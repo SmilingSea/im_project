@@ -26,4 +26,8 @@ public class ConversationUser {
         this.conversationId = conversationId;
         this.userId = userId;
     }
+
+    public Long getUserId() {
+        return userId;
+    }
 }

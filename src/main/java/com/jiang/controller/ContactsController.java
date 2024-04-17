@@ -1,6 +1,6 @@
 package com.jiang.controller;
 
-import com.jiang.aop.TokenRequired;
+import com.jiang.annotation.TokenRequired;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
 import com.jiang.domain.dao.UserDO;

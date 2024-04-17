@@ -1,7 +1,7 @@
 package com.jiang.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.jiang.aop.TokenRequired;
+import com.jiang.annotation.TokenRequired;
 import com.jiang.common.ResultWithData;
 import com.jiang.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,8 @@ public class MessageController {
      * @return Result
      * @throws JsonProcessingException
      */
-    @TokenRequired
+
+
     @GetMapping("/history/{conversation_id}")
     public ResultWithData<List<String>> history(@RequestHeader String token, @PathVariable("conversation_id") Long conversationId) throws JsonProcessingException {
         return messageService.history(token , conversationId);

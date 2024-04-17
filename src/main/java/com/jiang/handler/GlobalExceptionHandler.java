@@ -19,6 +19,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<String> handleNoTokenException(NoTokenException e) {
-        return Result.error("token为空");
+        return Result.error("缺少token或token无效");
     }
 }

@@ -1,4 +1,4 @@
-package com.jiang.aop;
+package com.jiang.annotation;
 
 import com.jiang.common.Result;
 import com.jiang.exception.NoTokenException;
@@ -7,8 +7,8 @@ import com.jiang.utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -22,6 +22,9 @@ public class TokenRequiredAspect {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     /**
      * 判断是否存在token的具体方法
@@ -39,10 +42,11 @@ public class TokenRequiredAspect {
         Long id = JWTUtils.getIdByToken(token);
 
         try{
-            boolean ifEquals = userService.getById(id).equals(null);
+           // if (redisTemplate.opsForValue().get(id) == null){
+                boolean ifEquals = userService.getById(id).equals(null);
+          //  }
         }catch (Exception e){
-            log.info("abcsavbasovuawegouag");
-            throw new NoTokenException(Result.error("缺少token"));
+            throw new NoTokenException(Result.error("缺少token，或token无效"));
         }
     }
 }

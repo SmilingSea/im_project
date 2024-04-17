@@ -1,7 +1,7 @@
 package com.jiang.controller;
 
 
-import com.jiang.aop.TokenRequired;
+import com.jiang.annotation.TokenRequired;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
@@ -77,5 +77,11 @@ public class UserController  {
     @PostMapping("/ban/{bannerId}")
     public Result<String> ban(@RequestHeader String token, @PathVariable("bannerId") Long bannerId){
         return banService.ban(token, bannerId);
+    }
+
+    @TokenRequired
+    @DeleteMapping("/unban/{bannerId}")
+    public Result<String> unBan(@RequestHeader String token, @PathVariable("bannerId") Long bannerId){
+        return banService.unBan(token, bannerId);
     }
 }

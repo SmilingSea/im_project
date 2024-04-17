@@ -1,11 +1,16 @@
 package com.jiang.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jiang.common.ResultWithData;
+import com.jiang.domain.dao.ConversationUser;
 import com.jiang.domain.dao.MessageDO;
 import com.jiang.mapper.MessageMapper;
+import com.jiang.service.ConversationService;
+import com.jiang.service.ConversationUserService;
 import com.jiang.service.MessageService;
 import com.jiang.utils.COSUtils;
 import com.jiang.utils.JWTUtils;
@@ -36,8 +41,15 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
+    @Resource
+    private ConversationService conversationService;
+
+    @Resource
+    private ConversationUserService conversationUserService;
+
     /**
      * 上传图片
+     *
      * @param token
      * @param multipartFile
      * @return
@@ -57,11 +69,12 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
 
         // TODO：大文件分片上传
 
-        return ResultWithData.success("上传成功",pictureUrl);
+        return ResultWithData.success("上传成功", pictureUrl);
     }
 
     /**
      * 获取消息列表
+     *
      * @param token
      * @param conversationId
      * @return
@@ -69,14 +82,28 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
      */
     @Override
     public ResultWithData history(String token, Long conversationId) throws JsonProcessingException {
+        Long id = JWTUtils.getIdByToken(token);
         List<String> messages = getMessagesByConversationId(conversationId);
 
-        // TODO：判断该用户是否是该会话成员，否则返回失败
-        return ResultWithData.success(messages,"查找成功");
+        // 判断是否存在该会话
+        if (conversationService.getById(conversationId) == null) {
+            return ResultWithData.error("该会话不存在！");
+        }
+
+        // 判断该用户是否是该会话成员，否则返回失败
+        LambdaQueryWrapper<ConversationUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(ConversationUser::getConversationId, conversationId)
+                .eq(ConversationUser::getUserId, id);
+        if (conversationUserService.getOne(queryWrapper) == null) {
+            return ResultWithData.error("您不在该会话中");
+        }
+
+        return ResultWithData.success(messages, "查找成功");
     }
 
     /**
      * 在redis中通过会话id获取消息记录
+     *
      * @param conversationId
      * @return
      * @throws JsonProcessingException
@@ -101,3 +128,5 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
 
 
 }
+
+

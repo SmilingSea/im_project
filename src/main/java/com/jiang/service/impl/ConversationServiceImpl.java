@@ -75,9 +75,16 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     @Override
     public ResultWithData<List<Long>> getMembers(String token, Long conversationId) {
         Long id = JWTUtils.getIdByToken(token);
+
         LambdaQueryWrapper<ConversationUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ConversationUser::getConversationId, conversationId);
         List<ConversationUser> list = conversationUserService.list(queryWrapper);
+
+        // 验证该用户是否在该会话中
+        queryWrapper.eq(ConversationUser::getUserId, id);
+        if(conversationUserService.getOne(queryWrapper) == null){
+            return ResultWithData.error("您不在会话中!");
+        }
 
         List<Long> memberIds = new ArrayList<>();
 

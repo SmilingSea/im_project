@@ -2,6 +2,7 @@ package com.jiang.socket;
 
 /**
  * websoket服务端
+ *
  * @author SmilingSea
  * 2024/3/20
  */
@@ -94,12 +95,6 @@ public class WebSocketServer {
         WebSocketServer.sender = sender;
     }
 
-    private static Base64Util base64Util;
-
-    @Resource
-    public void setBase64Util(Base64Util base64Util) {
-        WebSocketServer.base64Util = base64Util;
-    }
 
     private static ConversationUserService conversationUserService;
 
@@ -162,8 +157,6 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         log.info("发送消息");
-        log.info("收到来自窗口" + connectId + "的信息:" + message);
-
         // 解析收到的json
         MessageDTO messageDTO = JSON.parseObject(message, MessageDTO.class);
         Long conversationId = messageDTO.getConversationId();
@@ -253,8 +246,6 @@ public class WebSocketServer {
      * 群发自定义消息
      */
     public static void sendInfo(String message, @PathParam("sid") String sid) throws IOException {
-        log.info("推送给用户" + sid + "，推送内容:" + message);
-
         for (WebSocketServer item : webSocketSet) {
             try {
                 //这里可以设定只推送给这个connectId的，为null则全部推送

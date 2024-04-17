@@ -10,4 +10,6 @@ import com.jiang.domain.dao.BanDO;
  */
 public interface BanService extends IService<BanDO> {
     Result<String> ban(String token, Long bannerId);
+
+    Result<String> unBan(String token, Long bannerId);
 }

@@ -2,6 +2,7 @@ package com.jiang.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jiang.annotation.TokenRequired;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
@@ -115,6 +116,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
      * @param id
      * @return
      */
+    @TokenRequired
     @Override
     public ResultWithData<UserDTO> profile(String token, Long id) {
         // 根据id查找用户信息
