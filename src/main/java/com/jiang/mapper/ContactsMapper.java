@@ -1,8 +1,7 @@
 package com.jiang.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jiang.dao.ContactsDO;
-import com.jiang.dao.UserDO;
+import com.jiang.domain.dao.ContactsDO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

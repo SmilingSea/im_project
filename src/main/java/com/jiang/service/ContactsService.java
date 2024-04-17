@@ -3,8 +3,8 @@ package com.jiang.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
-import com.jiang.dao.ContactsDO;
-import com.jiang.dao.UserDO;
+import com.jiang.domain.dao.ContactsDO;
+import com.jiang.domain.dao.UserDO;
 
 import java.util.List;
 

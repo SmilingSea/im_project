@@ -3,7 +3,7 @@ package com.jiang.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
-import com.jiang.dao.ConversationDO;
+import com.jiang.domain.dao.ConversationDO;
 
 import java.util.List;
 

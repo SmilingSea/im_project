@@ -1,12 +1,14 @@
-package com.jiang.dao;
+package com.jiang.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.jiang.domain.enums.ConversationType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
+ * 会话实体类
  * @author SmilingSea
  * 2024/4/2
  */

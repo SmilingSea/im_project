@@ -2,7 +2,7 @@ package com.jiang.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jiang.common.Result;
-import com.jiang.dao.BanDO;
+import com.jiang.domain.dao.BanDO;
 
 /**
  * @author SmilingSea

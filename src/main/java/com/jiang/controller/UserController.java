@@ -1,16 +1,19 @@
 package com.jiang.controller;
 
 
+import com.jiang.aop.TokenRequired;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
-import com.jiang.dao.UserDO;
-import com.jiang.dto.UserDTO;
+import com.jiang.domain.dao.UserDO;
+import com.jiang.domain.dto.UserDTO;
 import com.jiang.service.BanService;
 import com.jiang.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 /**
@@ -44,7 +47,7 @@ public class UserController  {
      * @return
      */
     @PostMapping("/login")
-    public ResultWithToken<String> login(@RequestBody UserDO user){
+    public ResultWithToken<Map<String,Object>> login(@RequestBody UserDO user){
         return userService.login(user);
     }
 
@@ -53,9 +56,26 @@ public class UserController  {
         return userService.profile(token,id);
     }
 
+    /**
+     * 通过token查询个人信息
+     * @param token
+     * @return Result
+     */
+    @TokenRequired
+    @GetMapping("/profile")
+    public ResultWithData<UserDO> profile(@RequestHeader String token){
+        return userService.profile(token);
+    }
+
+    /**
+     * 屏蔽用户
+     * @param token
+     * @param bannerId
+     * @return
+     */
+    @TokenRequired
     @PostMapping("/ban/{bannerId}")
     public Result<String> ban(@RequestHeader String token, @PathVariable("bannerId") Long bannerId){
         return banService.ban(token, bannerId);
     }
-
 }

@@ -1,6 +1,7 @@
-package com.jiang.dao;
+package com.jiang.domain.enums;
 
 /**
+ * 消息类型
  * @author SmilingSea
  * 2024/4/5
  */

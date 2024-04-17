@@ -21,7 +21,6 @@ import javax.servlet.ServletException;
 public class WebSocketConfig implements ServletContextInitializer  {
     /**
      * ServerEndpointExporter这个Bean会自动注  册使用@ServerEndpoint注解声明的websocket endpoint
-     *
      * @return
      */
     @Bean
@@ -34,8 +33,7 @@ public class WebSocketConfig implements ServletContextInitializer  {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         servletContext.addListener(WebAppRootListener.class);
-        //这里设置了1024M的缓冲区
-        //Tomcat每次请求过来时在创建session时都会把这个webSocketContainer作为参数传进去所以对所有的session都生效了
-        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize","1024000");
+        //这里设置了10.24M的缓冲区
+        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize","10240");
     }
 }

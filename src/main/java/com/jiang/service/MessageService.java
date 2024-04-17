@@ -3,7 +3,7 @@ package com.jiang.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jiang.common.ResultWithData;
-import com.jiang.dao.MessageDO;
+import com.jiang.domain.dao.MessageDO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

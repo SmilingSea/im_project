@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
-import com.jiang.dao.ContactsDO;
-import com.jiang.dao.UserDO;
+import com.jiang.domain.dao.ContactsDO;
+import com.jiang.domain.dao.UserDO;
 import com.jiang.mapper.ContactsMapper;
 import com.jiang.service.ContactsService;
 import com.jiang.service.UserService;
@@ -33,7 +33,12 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, ContactsDO>
     private ContactsService contactsService;
 
 
-
+    /**
+     * 添加联系人
+     * @param token
+     * @param user
+     * @return
+     */
     @Override
     public Result<String> add(String token, UserDO user) {
         Long userId = JWTUtils.getIdByToken(token);
@@ -61,6 +66,12 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, ContactsDO>
         return Result.success("添加联系人成功");
     }
 
+    /**
+     * 移除联系人
+     * @param token
+     * @param contactsId
+     * @return
+     */
     @Override
     public Result<String> remove(String token, Long contactsId) {
 
@@ -76,6 +87,11 @@ public class ContactsServiceImpl extends ServiceImpl<ContactsMapper, ContactsDO>
         return Result.success("删除成功");
     }
 
+    /**
+     * 获取联系人列表
+     * @param token
+     * @return
+     */
     @Override
     public ResultWithData<List<Long>> getContacts(String token) {
         List<Long> data = new ArrayList<>();

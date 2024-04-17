@@ -2,7 +2,7 @@ package com.jiang.mq;
 
 import com.alibaba.fastjson.JSON;
 import com.jiang.config.RabbitConfig;
-import com.jiang.dao.MessageDO;
+import com.jiang.domain.dao.MessageDO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 /**
+ * mq生产者
  * @author SmilingSea
  * 2024/4/11
  */
@@ -17,7 +18,6 @@ import javax.annotation.Resource;
 @Slf4j
 public class Sender {
 
-    // 通过AmqpTemplate传递消息
     @Resource
     private AmqpTemplate rabbitTemplate;
 

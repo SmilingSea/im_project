@@ -1,6 +1,7 @@
-package com.jiang.utils;
+package com.jiang.socket;
 
 /**
+ * websoket服务端
  * @author SmilingSea
  * 2024/3/20
  */
@@ -9,17 +10,19 @@ package com.jiang.utils;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jiang.dao.BanDO;
-import com.jiang.dao.ConversationUser;
-import com.jiang.dao.MessageDO;
-import com.jiang.dao.MessageType;
+import com.jiang.domain.dao.BanDO;
+import com.jiang.domain.dao.ConversationUser;
+import com.jiang.domain.dao.MessageDO;
+import com.jiang.domain.enums.MessageType;
 
-import com.jiang.dto.MessageDTO;
+import com.jiang.domain.dto.MessageDTO;
 import com.jiang.filter.TextFilter;
 import com.jiang.mq.Sender;
 import com.jiang.service.BanService;
 import com.jiang.service.ConversationUserService;
+import com.jiang.utils.WebsocketUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Base64Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -101,17 +104,16 @@ public class WebSocketServer {
     private static ConversationUserService conversationUserService;
 
     @Resource
-    public void setConversationUserService(ConversationUserService conversationUserService){
+    public void setConversationUserService(ConversationUserService conversationUserService) {
         WebSocketServer.conversationUserService = conversationUserService;
     }
-    
+
     private static BanService banService;
-    
+
     @Resource
-    public void setBanService(BanService banService){
-        WebSocketServer.banService  = banService;
+    public void setBanService(BanService banService) {
+        WebSocketServer.banService = banService;
     }
-    
 
 
     /**
@@ -120,7 +122,7 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("connectId") String connectId) {
         InetSocketAddress remoteAddress = WebsocketUtils.getRemoteAddress(session);
-        log.info("远程ip地址："+remoteAddress);
+        log.info("远程ip地址：" + remoteAddress);
         this.session = session;
         //加入set中
         webSocketSet.add(this);
@@ -129,7 +131,7 @@ public class WebSocketServer {
         addOnlineCount();
         try {
             sendMessage("conn_success");
-            log.info("有新窗口开始监听:" + connectId + ",当前在线人数为:" + getOnlineCount());
+            log.info("新成员加入会话：" + connectId + ",当前在线人数为:" + getOnlineCount());
         } catch (IOException e) {
             log.error("websocket IO Exception");
         }
@@ -145,14 +147,11 @@ public class WebSocketServer {
         //在线数减1
         subOnlineCount();
         //断开连接情况下，更新主板占用情况为释放
-        log.info("释放的sid为：" + connectId);
+        log.info("用户退出：：" + connectId);
         //这里写释放的时候，要处理的业务
-        log.info("有一连接关闭！当前在线人数为" + getOnlineCount());
+        log.info("关闭连接：当前在线人数为" + getOnlineCount());
 
     }
-
-
-    // TODO:4.存消息用groupid存，查消息列表的时候顺便查被屏蔽的人，如果被屏蔽则不显示
 
 
     /**
@@ -178,7 +177,7 @@ public class WebSocketServer {
         MessageType type = MessageType.TEXT;
         String regex = "^https://improject-1322480945\\.cos\\.ap-nanjing\\.myqcloud\\.com/.*$";
         boolean ifPicture = content.matches(regex);
-        if (ifPicture){
+        if (ifPicture) {
             type = MessageType.PICTURE;
         }
 
@@ -188,21 +187,21 @@ public class WebSocketServer {
 
         // 查表发现是发给谁
         LambdaQueryWrapper<ConversationUser> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ConversationUser::getConversationId,conversationId);
+        queryWrapper.eq(ConversationUser::getConversationId, conversationId);
         List<ConversationUser> list = conversationUserService.list(queryWrapper);
-        
+
         // 查看是否被人屏蔽
         LambdaQueryWrapper<BanDO> banQuery = new LambdaQueryWrapper<>();
-        banQuery.eq(BanDO::getBannerId,userId);
+        banQuery.eq(BanDO::getBannerId, userId);
         List<BanDO> beBanList = banService.list();
 
         // 检测敏感词并替换
-        if(type.equals(MessageType.TEXT)){
+        if (type.equals(MessageType.TEXT)) {
             content = TextFilter.blockSensitiveWords(content);
         }
 
         // 发送消息，但是如果被屏蔽，则不接受消息
-        if (!(beBanList == null)){
+        if (!(beBanList == null)) {
             List<Long> bannerIds = new ArrayList<>();
             List<Long> receiverIds = new ArrayList<>();
             for (BanDO banDO : beBanList) {
@@ -219,7 +218,7 @@ public class WebSocketServer {
                 sendInfo(content, receiver.toString());
             }
 
-        }else{
+        } else {
             for (ConversationUser Users : list) {
                 // 发送到指定会话
                 sendInfo(content, Users.getUserId().toString());
@@ -227,14 +226,10 @@ public class WebSocketServer {
         }
 
 
-
-
-
         // 发送message对象到消息队列中
         sender.send(messageDO);
         log.info("消息已发送");
     }
-
 
 
     /**
@@ -258,7 +253,7 @@ public class WebSocketServer {
      * 群发自定义消息
      */
     public static void sendInfo(String message, @PathParam("sid") String sid) throws IOException {
-        log.info("推送消息到窗口" + sid + "，推送内容:" + message);
+        log.info("推送给用户" + sid + "，推送内容:" + message);
 
         for (WebSocketServer item : webSocketSet) {
             try {

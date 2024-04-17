@@ -1,9 +1,10 @@
-package com.jiang.dto;
+package com.jiang.domain.dto;
 
 import lombok.Data;
 
 
 /**
+ * 用户数据传输对象
  * @author SmilingSea
  * 2024/3/31
  */

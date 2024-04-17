@@ -2,11 +2,18 @@ package com.jiang.filter;
 
 import java.util.*;
 
+/**
+ * 敏感词过滤器
+ */
 public class TextFilter {
     private Map<Object,Object> sensitiveWordsMap;
 
     private static final String END_FLAG="end";
 
+    /**
+     * 创建敏感词Map
+     * @param sensitiveWords
+     */
     private void initSensitiveWordsMap(Set<String> sensitiveWords){
         if(sensitiveWords==null||sensitiveWords.isEmpty()){
             throw new IllegalArgumentException("Senditive words must not be empty!");
@@ -18,7 +25,8 @@ public class TextFilter {
         Iterator<String> iterator = sensitiveWords.iterator();
         while (iterator.hasNext()){
             currentWord=iterator.next();
-            if(currentWord==null||currentWord.trim().length()<2){  //敏感词长度必须大于等于2
+            //敏感词长度必须大于等于2
+            if(currentWord==null||currentWord.trim().length()<2){
                 continue;
             }
             currentMap=sensitiveWordsMap;
@@ -40,6 +48,13 @@ public class TextFilter {
             }
         }
     }
+
+    /**
+     * 获取敏感词
+     * @param text
+     * @param matchType
+     * @return
+     */
     public Set<String> getSensitiveWords(String text,MatchType matchType){
         if(text==null||text.trim().length()==0){
             throw new IllegalArgumentException("The input text must not be empty.");
@@ -59,6 +74,13 @@ public class TextFilter {
         return sensitiveWords;
     }
 
+    /**
+     * 获取敏感词长度
+     * @param text
+     * @param startIndex
+     * @param matchType
+     * @return
+     */
     public int getSensitiveWordLength(String text,int startIndex,MatchType matchType){
         if(text==null||text.trim().length()==0){
             throw new IllegalArgumentException("The input text must not be empty.");
@@ -94,6 +116,7 @@ public class TextFilter {
 
     
 
+
     public static Set<String> newHashSet(String... strings) {
         HashSet<String> set = new HashSet<String>();
 
@@ -108,7 +131,7 @@ public class TextFilter {
             System.err.println("未接受到消息");
             return "";
         }
-        Set<String> sensitiveWords = newHashSet("傻逼", "shit");
+        Set<String> sensitiveWords = newHashSet("傻逼", "shit","原神","启动","操你妈","cnm");
         TextFilter textFilter=new TextFilter();
         textFilter.initSensitiveWordsMap(sensitiveWords);
 

@@ -6,11 +6,17 @@ import javax.websocket.RemoteEndpoint.Async;
 import javax.websocket.Session;
 
 /**
+ * websocket工具类
  * @author SmilingSea
  * 2024/4/14
  */
 public class WebsocketUtils {
 
+    /**
+     * 获取id
+     * @param session
+     * @return
+     */
     public static InetSocketAddress getRemoteAddress(Session session) {
         if (session == null) {
             return null;

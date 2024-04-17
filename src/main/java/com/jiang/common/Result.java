@@ -73,5 +73,11 @@ public class Result<T> {
         return r;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
 
+    public String getMessage() {
+        return message;
+    }
 }

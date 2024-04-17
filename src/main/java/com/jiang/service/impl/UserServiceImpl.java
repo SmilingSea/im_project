@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
 import com.jiang.common.ResultWithToken;
-import com.jiang.dao.UserDO;
-import com.jiang.dto.UserDTO;
+import com.jiang.domain.dao.UserDO;
+import com.jiang.domain.dto.UserDTO;
 import com.jiang.mapper.UserMapper;
 import com.jiang.service.UserService;
 
@@ -18,6 +18,8 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,6 +36,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     @Resource
     private RedisTemplate redisTemplate;
 
+    /**
+     * 用户注册
+     * @param userDO
+     * @return
+     */
     @Override
     public Result<String> register(UserDO userDO) {
         // 使用MD5进行加密密码
@@ -57,8 +64,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     }
 
 
+    /**
+     * 用户登录
+     * @param user
+     * @return
+     */
     @Override
-    public ResultWithToken<String> login(UserDO user) {
+    public ResultWithToken<Map<String,Object>> login(UserDO user) {
         String username = user.getUsername();
         String password = user.getPassword();
         // 转换密码
@@ -87,11 +99,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
         redisTemplate.opsForValue().set(id.toString(), token, 7, TimeUnit.DAYS);
 
+        Map<String, Object> data = new HashMap<>();
+        data.put("token",token);
+        data.put("id",JWTUtils.getIdByToken(token));
+
+
         //登录成功，返回token
-        return ResultWithToken.success(token ,"登录成功！");
+        return ResultWithToken.success(data ,"登录成功！");
     }
 
 
+    /**
+     * 根据id查询用户信息（不包含隐私）
+     * @param token
+     * @param id
+     * @return
+     */
     @Override
     public ResultWithData<UserDTO> profile(String token, Long id) {
         // 根据id查找用户信息
@@ -100,5 +123,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         UserDO user = userService.getOne(queryWrapper);
         UserDTO data = new UserDTO(user.getId(), user.getUsername(), user.getNickname(), user.getEmail(), user.getAuthority());
         return ResultWithData.success(data,"查询成功！");
+    }
+
+    /**
+     * 根据token查询用户信息（包含隐私）
+     * @param token
+     * @return
+     */
+    @Override
+    public ResultWithData<UserDO> profile(String token) {
+        // 根据token获得id
+        Long id = JWTUtils.getIdByToken(token);
+        UserDO user = userService.getById(id);
+
+        return ResultWithData.success(user,"查询成功！");
     }
 }

@@ -3,10 +3,10 @@ package com.jiang.mq;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jiang.dao.MessageDO;
+import com.jiang.domain.dao.MessageDO;
 import com.jiang.service.MessageService;
+import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -31,9 +31,8 @@ public class SpringRabbitListener {
     private RedisTemplate<String, String> redisTemplate;
 
 
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queuesToDeclare = @Queue(QUEUE_NAME))
     public void listenSimpleQueueMessage(String msg) throws InterruptedException, JsonProcessingException {
-        // System.out.println("spring 消费者接收到消息：【" + msg + "】");
         // 接收json实体类字符串，转化成实体
         MessageDO messageDO = JSONObject.parseObject(msg, MessageDO.class);
         System.out.println(messageDO);

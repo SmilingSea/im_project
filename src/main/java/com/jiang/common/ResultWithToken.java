@@ -5,8 +5,7 @@ import lombok.Data;
 
 
 /**
- * 通用返回结果类，服务端响应的数据最终都会封装成此对象
- *
+ * 通用返回结果类，返回信息和token
  * @author SmilingSea
  * @param <T>
  */

@@ -2,7 +2,7 @@ package com.jiang.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jiang.dao.ConversationUser;
+import com.jiang.domain.dao.ConversationUser;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

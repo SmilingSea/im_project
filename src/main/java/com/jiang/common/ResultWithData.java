@@ -1,6 +1,7 @@
 package com.jiang.common;
 
 /**
+ * 通用返回结果类
  * @author SmilingSea
  * 2024/3/31
  */

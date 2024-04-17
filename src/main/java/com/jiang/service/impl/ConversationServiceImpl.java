@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jiang.common.Result;
 import com.jiang.common.ResultWithData;
-import com.jiang.dao.ConversationDO;
-import com.jiang.dao.ConversationType;
-import com.jiang.dao.ConversationUser;
+import com.jiang.domain.dao.ConversationDO;
+import com.jiang.domain.enums.ConversationType;
+import com.jiang.domain.dao.ConversationUser;
 import com.jiang.mapper.ConversationMapper;
 import com.jiang.service.ConversationService;
 import com.jiang.service.ConversationUserService;
@@ -31,6 +31,12 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     @Resource
     private ConversationUserService conversationUserService;
 
+    /**
+     * 创建会话
+     * @param token
+     * @param contactId
+     * @return
+     */
     @Override
     public Result<String> create(String token, List<Long> contactId) {
         ConversationDO conversation = new ConversationDO();
@@ -60,6 +66,12 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
         return Result.success("创建成功！");
     }
 
+    /**
+     * 获取会话成员
+     * @param token
+     * @param conversationId
+     * @return
+     */
     @Override
     public ResultWithData<List<Long>> getMembers(String token, Long conversationId) {
         Long id = JWTUtils.getIdByToken(token);
@@ -78,6 +90,11 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
         return ResultWithData.success(memberIds,"查询会话成员成功！");
     }
 
+    /**
+     * 获取会话列表
+     * @param token
+     * @return
+     */
     @Override
     public ResultWithData<List<Long>> getConversations(String token) {
         Long userId = JWTUtils.getIdByToken(token);

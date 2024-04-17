@@ -1,7 +1,7 @@
 package com.jiang.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.jiang.dao.ConversationUser;
+import com.jiang.domain.dao.ConversationUser;
 
 
 /**

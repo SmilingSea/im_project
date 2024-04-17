@@ -1,6 +1,5 @@
 package com.jiang;
 
-import com.jiang.utils.WebSocketServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -31,9 +30,13 @@ public class Application implements ServletContextInitializer {
     }
 
 
-    //设置websocket发送内容长度
+    /**
+     * 设置websocket消息内容长度
+     * @param servletContext
+     * @throws ServletException
+     */
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize","224288000");
+        servletContext.setInitParameter("org.apache.tomcat.websocket.textBufferSize","10240");
     }
 }

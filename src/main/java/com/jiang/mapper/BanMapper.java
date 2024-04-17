@@ -1,7 +1,7 @@
 package com.jiang.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.jiang.dao.BanDO;
+import com.jiang.domain.dao.BanDO;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

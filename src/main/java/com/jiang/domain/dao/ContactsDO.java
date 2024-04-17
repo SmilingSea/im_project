@@ -1,4 +1,4 @@
-package com.jiang.dao;
+package com.jiang.domain.dao;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -8,6 +8,7 @@ import org.apache.tomcat.jni.Local;
 import java.time.LocalDateTime;
 
 /**
+ * 联系人实体类
  * @author SmilingSea
  * 2024/3/31
  */

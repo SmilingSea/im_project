@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.jiang.common.ResultWithData;
-import com.jiang.dao.MessageDO;
+import com.jiang.domain.dao.MessageDO;
 import com.jiang.mapper.MessageMapper;
 import com.jiang.service.MessageService;
 import com.jiang.utils.COSUtils;
@@ -36,6 +36,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
+    /**
+     * 上传图片
+     * @param token
+     * @param multipartFile
+     * @return
+     * @throws IOException
+     */
     @Override
     public ResultWithData<String> sendPicture(String token, MultipartFile multipartFile) throws IOException {
         // 获取用户id
@@ -53,13 +60,27 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, MessageDO> im
         return ResultWithData.success("上传成功",pictureUrl);
     }
 
+    /**
+     * 获取消息列表
+     * @param token
+     * @param conversationId
+     * @return
+     * @throws JsonProcessingException
+     */
     @Override
     public ResultWithData history(String token, Long conversationId) throws JsonProcessingException {
         List<String> messages = getMessagesByConversationId(conversationId);
 
+        // TODO：判断该用户是否是该会话成员，否则返回失败
         return ResultWithData.success(messages,"查找成功");
     }
 
+    /**
+     * 在redis中通过会话id获取消息记录
+     * @param conversationId
+     * @return
+     * @throws JsonProcessingException
+     */
     public List<String> getMessagesByConversationId(Long conversationId) throws JsonProcessingException {
         // 构建会话对应的 Redis key
         String conversationKey = CONVERSATION_PREFIX + conversationId;

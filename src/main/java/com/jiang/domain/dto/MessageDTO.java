@@ -1,9 +1,9 @@
-package com.jiang.dto;
+package com.jiang.domain.dto;
 
-import com.jiang.dao.MessageType;
 import lombok.Data;
 
 /**
+ * 消息数据传输对象
  * @author SmilingSea
  * 2024/4/5
  */
