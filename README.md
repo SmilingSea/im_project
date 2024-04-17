@@ -54,7 +54,7 @@ springboot+mysql+redis+websocket+rabbitmq
 
 ![img](https://ya9ypg54pf.feishu.cn/space/api/box/stream/download/asynccode/?code=MGUyZGMzYWE0MGE4YjcxYTdjYmZiYzIzZDg2MDI3NDhfUVlkZE5raVdlYXJhclRPdnJtQmpmclJadTAwZWVWTXFfVG9rZW46WEJ5a2I5dWJyb25hQzh4VDhsY2M3RW1ObmRnXzE3MTMzNjUzODY6MTcxMzM2ODk4Nl9WNA)
 
-1. 上传到服务器并解压
+2. 上传到服务器并解压
 
 ```Bash
 sudo unzip im_project-1.0.zip
@@ -62,7 +62,7 @@ sudo unzip im_project-1.0.zip
 
 ![img](https://ya9ypg54pf.feishu.cn/space/api/box/stream/download/asynccode/?code=YzE4NDIxMGNjOWI3OGNjZTY5MjQ3MTZmNTJmM2MzNTJfRkZqaGhJbWozY1IzVlRhNUNaZzl1VmVKNzFaWTA1UTZfVG9rZW46SXhobWJJQjh5b051Nm14T0szSmNYNndablRnXzE3MTMzNjUzODY6MTcxMzM2ODk4Nl9WNA)
 
-1. 创建该项目的镜像
+3. 创建该项目的镜像
 
 ```Bash
 sudo docker build -t im_project:v1.0 .
@@ -70,7 +70,7 @@ sudo docker build -t im_project:v1.0 .
 
 ![img](https://ya9ypg54pf.feishu.cn/space/api/box/stream/download/asynccode/?code=NWIyZGRkNjg4MGNhZGVjOTBjYTM3YzlhMTRmZWM0YWZfb3A3M0JEbEkwcG8xdGN3aW9QbXVaenk0TXBIUDdsSUhfVG9rZW46STFaMmJPUzU4b21LRlZ4TUhCRmNKQ2IzbkhnXzE3MTMzNjUzODY6MTcxMzM2ODk4Nl9WNA)
 
-1. 运行docker-compose
+4. 运行docker-compose
 
 ```Bash
 sudo docker-compose up -d
@@ -78,7 +78,7 @@ sudo docker-compose up -d
 
 ![img](https://ya9ypg54pf.feishu.cn/space/api/box/stream/download/asynccode/?code=ZjA5MTQxMGYyMzRjNjIyNTIyYmE4OTczN2Y2MmNlNzBfR3Y5SWhXSTdoRGYyS2x1TVpRVTBLcWtkVk5Oa2JjQ1pfVG9rZW46RnBpMWJHckljb2NlaW14cnFXdmNwdVBGbnJjXzE3MTMzNjUzODY6MTcxMzM2ODk4Nl9WNA)
 
-1. 查看是否正常运行
+5. 查看是否正常运行
 
 ```Bash
 sudo docker ps
@@ -86,7 +86,7 @@ sudo docker ps
 
 ![img](https://ya9ypg54pf.feishu.cn/space/api/box/stream/download/asynccode/?code=ZmFiNzIwMWI4NzUzMWE5ZWQ3OWUwYTI1MzU0Yzk2MDJfS1hhYktNanJEVjNaRWl3bXFSMTZLaXprVXJSRHI2SWFfVG9rZW46UU5wT2JIWlQ2b2I3QmN4R3F1dGNRellVbmhlXzE3MTMzNjUzODY6MTcxMzM2ODk4Nl9WNA)
 
-1. 导入数据表结构（sql文件在项目地址里面）
+6. 导入数据表结构（sql文件在项目地址里面）
 
 ![img](https://ya9ypg54pf.feishu.cn/space/api/box/stream/download/asynccode/?code=YjI5YzU3ODhiMDY1N2RmYjE0N2ExNmNhOWI2N2ViNjNfZXBoY3laTVNlMmhwdzBvd2dNSVN4RktJaXh6MUZodXNfVG9rZW46UmZuM2JZRlBnb2pwVGJ4ZG14VWNURW9EbkZmXzE3MTMzNjUzODY6MTcxMzM2ODk4Nl9WNA)
 
@@ -100,15 +100,15 @@ sudo docker ps
 
 在发送消息存消息记录时，将消息对象存入rabbitmq，防止因数据库操作耗时导致发送消息延迟。
 
-1. ### 使用DFA算法实现敏感词过滤
+2. ### 使用DFA算法实现敏感词过滤
 
 通过树状结构存入敏感词并进行查找，在敏感词词库数量大时，相对于直接查找敏感词效率更高。
 
-1. ### 代码风格
+3. ### 代码风格
 
 使用Restful风格代码，注释完善。
 
-1. ### 自定义注解进行token验证
+4. ### 自定义注解进行token验证
 
 为了避免在每个需要验证token的接口中都写一遍验证token是否为空的具体实现，使用自定义注解来实现，在需要验证token的接口上添加这个注解。
 
