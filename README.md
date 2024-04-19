@@ -60,7 +60,7 @@ springboot+mysql+redis+websocket+rabbitmq
 sudo unzip im_project-1.0.zip
 ```
 
-![](.\assets\2.PNG)
+![](https://github.com/SmilingSea/im_project/blob/master/assets/2.PNG)
 
 3. 创建该项目的镜像
 
@@ -68,7 +68,7 @@ sudo unzip im_project-1.0.zip
 sudo docker build -t im_project:v1.0 .
 ```
 
-![5f537eb3-7607-4acb-839b-10c53d1be938](.\assets\5f537eb3-7607-4acb-839b-10c53d1be938.png)
+![5f537eb3-7607-4acb-839b-10c53d1be938](https://github.com/SmilingSea/im_project/blob/master/assets/5f537eb3-7607-4acb-839b-10c53d1be938.png)
 
 4. 运行docker-compose
 
@@ -76,7 +76,7 @@ sudo docker build -t im_project:v1.0 .
 sudo docker-compose up -d
 ```
 
-![63504c02-c455-493c-a719-33ae17a9f581](.\assets\63504c02-c455-493c-a719-33ae17a9f581.png)
+![63504c02-c455-493c-a719-33ae17a9f581](https://github.com/SmilingSea/im_project/blob/master/assets/63504c02-c455-493c-a719-33ae17a9f581.png)
 
 5. 查看是否正常运行
 
@@ -84,13 +84,13 @@ sudo docker-compose up -d
 sudo docker ps
 ```
 
-![0a735221-4540-4453-a4db-2572f5a80860](.\assets\0a735221-4540-4453-a4db-2572f5a80860.png)
+![0a735221-4540-4453-a4db-2572f5a80860](https://github.com/SmilingSea/im_project/blob/master/assets/0a735221-4540-4453-a4db-2572f5a80860.png)
 
 6. 导入数据表结构（sql文件在项目地址里面）
 
-![840ea886-818b-4ba9-aca0-f5a9122bd972](.\assets\840ea886-818b-4ba9-aca0-f5a9122bd972.png)
+![840ea886-818b-4ba9-aca0-f5a9122bd972](https://github.com/SmilingSea/im_project/blob/master/assets/840ea886-818b-4ba9-aca0-f5a9122bd972.png)
 
-![](.\assets\656ca444-3444-4b8b-9776-b0efa2ad1a89.png)
+![](https://github.com/SmilingSea/im_project/blob/master/assets/656ca444-3444-4b8b-9776-b0efa2ad1a89.png)
 
 
 
