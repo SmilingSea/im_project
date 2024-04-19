@@ -52,7 +52,7 @@ springboot+mysql+redis+websocket+rabbitmq
 
 1. 下载Release
 
-![1](.\assets\1.PNG)
+![1](https://github.com/SmilingSea/im_project/blob/master/assets/1.PNG)
 
 2. 上传到服务器并解压
 
