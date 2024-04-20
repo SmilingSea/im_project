@@ -6,9 +6,11 @@ import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicSessionCredentials;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.model.UploadResult;
 import com.qcloud.cos.region.Region;
 import com.qcloud.cos.transfer.TransferManager;
 import com.qcloud.cos.transfer.TransferManagerConfiguration;
+import com.qcloud.cos.transfer.Upload;
 import com.tencent.cloud.CosStsClient;
 import com.tencent.cloud.Response;
 
@@ -107,7 +109,8 @@ public class COSUtils {
             transferManager.setConfiguration(transferManagerConfiguration);
 
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
-            PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+            Upload upload = transferManager.upload(putObjectRequest);
+            UploadResult uploadResult = upload.waitForUploadResult();
             return "https://improject-1322480945.cos.ap-nanjing.myqcloud.com/" + key;
         } catch (Exception e) {
             // TODO : 日志打印成文件
