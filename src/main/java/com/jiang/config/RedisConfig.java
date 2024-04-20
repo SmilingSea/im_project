@@ -23,6 +23,7 @@ public class RedisConfig {
      * @param redisConnectionFactory
      * @return
      */
+
     @Bean
     public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();

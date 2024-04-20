@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 @Configuration
 public class RabbitConfig {
 
+    // 定义队列
     public final static String QUEUE_NAME = "improject";
 
     /**

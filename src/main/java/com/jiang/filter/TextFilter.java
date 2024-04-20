@@ -6,8 +6,14 @@ import java.util.*;
  * 敏感词过滤器
  */
 public class TextFilter {
+    /**
+     * 储存敏感词的map结构，其中每个键是字符，值也是一个map结构，用来储存下一个字符
+     */
     private Map<Object,Object> sensitiveWordsMap;
 
+    /**
+     * 静态常量，用来标识敏感词的结束
+     */
     private static final String END_FLAG="end";
 
     /**
@@ -15,6 +21,7 @@ public class TextFilter {
      * @param sensitiveWords
      */
     private void initSensitiveWordsMap(Set<String> sensitiveWords){
+        // 非空验证
         if(sensitiveWords==null||sensitiveWords.isEmpty()){
             throw new IllegalArgumentException("Senditive words must not be empty!");
         }
@@ -25,11 +32,13 @@ public class TextFilter {
         Iterator<String> iterator = sensitiveWords.iterator();
         while (iterator.hasNext()){
             currentWord=iterator.next();
-            //敏感词长度必须大于等于2
+            //敏感词长度必须大于等于2，长度小于2为无效敏感词
             if(currentWord==null||currentWord.trim().length()<2){
                 continue;
             }
             currentMap=sensitiveWordsMap;
+
+            // 遍历每一个敏感词，将敏感词以char的形式嵌套存入map中
             for(int i=0;i<currentWord.length();i++){
                 char c=currentWord.charAt(i);
                 subMap=(Map<Object, Object>) currentMap.get(c);
@@ -56,6 +65,7 @@ public class TextFilter {
      * @return
      */
     public Set<String> getSensitiveWords(String text,MatchType matchType){
+        // 非空判断
         if(text==null||text.trim().length()==0){
             throw new IllegalArgumentException("The input text must not be empty.");
         }
@@ -131,7 +141,8 @@ public class TextFilter {
             System.err.println("未接受到消息");
             return "";
         }
-        Set<String> sensitiveWords = newHashSet("傻逼", "shit","原神","启动","操你妈","cnm");
+
+        Set<String> sensitiveWords = newHashSet("傻逼", "shit","原神","启动","操你妈","cnm","傻子");
         TextFilter textFilter=new TextFilter();
         textFilter.initSensitiveWordsMap(sensitiveWords);
 

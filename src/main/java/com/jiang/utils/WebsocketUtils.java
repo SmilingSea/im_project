@@ -53,7 +53,6 @@ public class WebsocketUtils {
             } catch (Exception e) {
             }
         }
-
         return null;
     }
 

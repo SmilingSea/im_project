@@ -43,7 +43,7 @@ public class SpringRabbitListener {
 
     public void saveMessage(MessageDO message) throws JsonProcessingException {
         // 构建 Redis 中存储消息的 key
-        String key = MESSAGE_PREFIX + message.getId();
+        String key = "message:" + message.getId();
         // 将 MessageDO 对象转换成 JSON 字符串
         ObjectMapper objectMapper = new ObjectMapper();
         String value = objectMapper.writeValueAsString(message);
@@ -51,8 +51,7 @@ public class SpringRabbitListener {
         redisTemplate.opsForValue().set(key, value, Duration.ofDays(7));
 
         // 将消息添加到会话对应的有序集合中
-        String conversationKey = CONVERSATION_PREFIX + message.getConversationId();
+        String conversationKey = "conversation:" + message.getConversationId();
         redisTemplate.opsForZSet().add(conversationKey, key, message.getSentAt().toEpochSecond(ZoneOffset.UTC));
     }
-
 }

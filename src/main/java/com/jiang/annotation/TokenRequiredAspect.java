@@ -26,25 +26,23 @@ public class TokenRequiredAspect {
     @Resource
     private RedisTemplate redisTemplate;
 
+    @Resource
+    protected HttpServletRequest httpServletRequest;
+
     /**
      * 判断是否存在token的具体方法
      */
     @Before("@annotation(TokenRequired)")
     public void beforeTokenRequired() {
-        // 获取当前请求的 HttpServletRequest
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
 
-        // 从请求头中获取 token
-        String token = request.getHeader("token");
+        // 获取请求头中的token
+        String token = httpServletRequest.getHeader("token");
 
         // 验证token
         Long id = JWTUtils.getIdByToken(token);
 
         try{
-           // if (redisTemplate.opsForValue().get(id) == null){
                 boolean ifEquals = userService.getById(id).equals(null);
-          //  }
         }catch (Exception e){
             throw new NoTokenException(Result.error("缺少token，或token无效"));
         }

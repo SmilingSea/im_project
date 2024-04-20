@@ -20,7 +20,7 @@ import javax.servlet.ServletException;
 @Configuration
 public class WebSocketConfig implements ServletContextInitializer  {
     /**
-     * ServerEndpointExporter这个Bean会自动注  册使用@ServerEndpoint注解声明的websocket endpoint
+     * ServerEndpointExporter这个Bean会自动注 册使用@ServerEndpoint注解声明的websocket endpoint
      * @return
      */
     @Bean

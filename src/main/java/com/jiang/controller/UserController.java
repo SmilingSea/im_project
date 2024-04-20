@@ -68,7 +68,7 @@ public class UserController  {
     }
 
     /**
-     * 屏蔽用户
+     * 屏蔽用户接口
      * @param token
      * @param bannerId
      * @return
@@ -79,6 +79,12 @@ public class UserController  {
         return banService.ban(token, bannerId);
     }
 
+    /**
+     * 解除屏蔽接口
+     * @param token
+     * @param bannerId
+     * @return
+     */
     @TokenRequired
     @DeleteMapping("/unban/{bannerId}")
     public Result<String> unBan(@RequestHeader String token, @PathVariable("bannerId") Long bannerId){

@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(NoTokenException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<String> handleNoTokenException(NoTokenException e) {
         return Result.error("缺少token或token无效");
     }
+
+
 }

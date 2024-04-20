@@ -16,23 +16,33 @@ public class NoTokenException extends RuntimeException {
     private String message;
 
 
-    // 无参构造函数
+    /**
+     * 无参构造函数
+     */
     public NoTokenException() {
         super();
     }
 
-    // 带有详细信息的构造函数
+    /**
+     * 带有详细信息的构造函数
+     */
     public NoTokenException(String message) {
         super(message);
     }
 
+    /**
+     * 自定义构造器
+     * @param result
+     */
     public NoTokenException(Result result){
         this.success = result.isSuccess();
         this.message = result.getMessage();
     }
 
 
-    // 带有详细信息和原因的构造函数
+    /**
+     * 带有详细信息和原因的构造函数
+     */
     public NoTokenException(String message, Throwable cause) {
         super(message, cause);
     }
