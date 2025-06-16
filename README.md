@@ -6,7 +6,7 @@
 
 github仓库链接：https://github.com/SmilingSea/im_project
 
-本项目是根据西二五轮考核要求，基于springboot与websocket实现了实时通讯的聊天室。
+本项目基于springboot与websocket实现了实时通讯的聊天室后台。
 
 ## 二、项目实现
 
